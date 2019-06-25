@@ -9,13 +9,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/olivere/elastic"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tsaikd/gogstash/config"
 	"github.com/tsaikd/gogstash/config/goglog"
 	"github.com/tsaikd/gogstash/config/logevent"
-	"gopkg.in/olivere/elastic.v6"
 )
 
 func init() {
@@ -113,7 +113,10 @@ func Test_output_elastic_module(t *testing.T) {
 	require := require.New(t)
 	require.NotNil(require)
 
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 2000*time.Millisecond)
+	defer cancel()
+	testIndexName := "gogstash-index-test"
+
 	conf, err := config.LoadFromYAML([]byte(strings.TrimSpace(`
 debugch: true
 output:
@@ -131,6 +134,19 @@ output:
 		t.Skip("skip test output elastic module")
 	}
 
+	client, err := elastic.NewClient(
+		elastic.SetURL("http://127.0.0.1:9200"),
+		elastic.SetSniff(false),
+		elastic.SetDecoder(&jsonDecoder{}),
+	)
+	require.NoError(err)
+	require.NotNil(client)
+
+	defer func() {
+		_, err = client.DeleteIndex(testIndexName).Do(ctx)
+		require.NoError(err)
+	}()
+
 	conf.TestInputEvent(logevent.LogEvent{
 		Timestamp: time.Date(2017, 4, 18, 19, 53, 1, 2, time.UTC),
 		Message:   "output elastic test message",
@@ -144,21 +160,9 @@ output:
 		require.Equal("output elastic test message", event.Message)
 	}
 
-	client, err := elastic.NewClient(
-		elastic.SetURL("http://127.0.0.1:9200"),
-		elastic.SetSniff(false),
-	)
-	require.NoError(err)
-	require.NotNil(client)
-
-	ctx, cancel := context.WithTimeout(context.Background(), 1000*time.Millisecond)
-	defer cancel()
-	result, err := client.Get().Index("gogstash-index-test").Id("ABC").Do(ctx)
+	result, err := client.Get().Index(testIndexName).Id("ABC").Do(ctx)
 	require.NoError(err)
 	require.NotNil(result)
 	require.NotNil(result.Source)
-	require.Equal(`{"@timestamp":"2017-04-18T19:53:01.000000002Z","fieldnumber":123,"fieldstring":"ABC","message":"output elastic test message"}`, string(*result.Source))
-
-	_, err = client.DeleteIndex("gogstash-index-test").Do(ctx)
-	require.NoError(err)
+	require.JSONEq(`{"@timestamp":"2017-04-18T19:53:01.000000002Z","fieldnumber":123,"fieldstring":"ABC","message":"output elastic test message"}`, string(*result.Source))
 }

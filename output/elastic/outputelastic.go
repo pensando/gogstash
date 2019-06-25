@@ -8,12 +8,12 @@ import (
 	"time"
 
 	jsoniter "github.com/json-iterator/go"
+	"github.com/olivere/elastic"
 	"github.com/sirupsen/logrus"
 	"github.com/tsaikd/KDGoLib/errutil"
 	"github.com/tsaikd/gogstash/config"
 	"github.com/tsaikd/gogstash/config/goglog"
 	"github.com/tsaikd/gogstash/config/logevent"
-	"gopkg.in/olivere/elastic.v6"
 )
 
 // ModuleName is the name used in config file
