@@ -13,7 +13,7 @@ import (
 	"github.com/tsaikd/gogstash/config"
 	"github.com/tsaikd/gogstash/config/goglog"
 	"github.com/tsaikd/gogstash/config/logevent"
-	"gopkg.in/olivere/elastic.v6"
+	"gopkg.in/olivere/elastic.v7"
 )
 
 // ModuleName is the name used in config file
@@ -183,13 +183,11 @@ func (t *OutputConfig) Output(ctx context.Context, event logevent.LogEvent) (err
 	index := event.Format(t.Index)
 	// elastic index name should be lowercase
 	index = strings.ToLower(index)
-	doctype := event.Format(t.DocumentType)
 	id := event.Format(t.DocumentID)
 
 	indexRequest := elastic.NewBulkIndexRequest().
 		Index(index).
 		RetryOnConflict(t.RetryOnConflict).
-		Type(doctype).
 		Id(id).
 		Doc(event)
 	t.processor.Add(indexRequest)

@@ -26,6 +26,7 @@ import (
 	"github.com/tsaikd/gogstash/input/lorem"
 	"github.com/tsaikd/gogstash/input/redis"
 	"github.com/tsaikd/gogstash/input/socket"
+	"github.com/tsaikd/gogstash/input/nats"
 	"github.com/tsaikd/gogstash/output/amqp"
 	"github.com/tsaikd/gogstash/output/cond"
 	"github.com/tsaikd/gogstash/output/elastic"
@@ -47,6 +48,7 @@ func init() {
 	config.RegistInputHandler(inputhttp.ModuleName, inputhttp.InitHandler)
 	config.RegistInputHandler(inputhttplisten.ModuleName, inputhttplisten.InitHandler)
 	config.RegistInputHandler(inputlorem.ModuleName, inputlorem.InitHandler)
+	config.RegistInputHandler(inputnats.ModuleName, inputnats.InitHandler)
 	config.RegistInputHandler(inputredis.ModuleName, inputredis.InitHandler)
 	config.RegistInputHandler(inputsocket.ModuleName, inputsocket.InitHandler)
 
