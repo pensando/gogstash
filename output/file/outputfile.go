@@ -200,7 +200,7 @@ func (t *OutputConfig) Output(ctx context.Context, event logevent.LogEvent) (err
 		}()
 	}
 
-	log := event.Format(t.Codec)
+	log := fmt.Sprintf("[%v] %v", event.Timestamp, event.Extra)
 	channel <- log
 	return
 }
