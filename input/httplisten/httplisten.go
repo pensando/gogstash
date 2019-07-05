@@ -24,8 +24,6 @@ type InputConfig struct {
 	config.InputConfig
 	Address       string   `json:"address"`        // host:port to listen on
 	Path          string   `json:"path"`           // The path to accept json HTTP POST requests on
-	ServerCert    string   `json:"cert"`
-	ServerKey     string   `json:"key"`
 	RequireHeader []string `json:"require_header"` // Require this header to be present to accept the POST ("X-Access-Token: Potato")
 }
 
@@ -84,12 +82,7 @@ func (i *InputConfig) Start(ctx context.Context, msgChan chan<- logevent.LogEven
 	})
 	go func() {
 		logger.Infof("accepting POST requests to %s%s", i.Address, i.Path)
-		if i.ServerCert != "" && i.ServerKey != "" {
-			err = http.ListenAndServeTLS(i.Address, i.ServerCert, i.ServerKey, nil)
-		} else {
-			err = http.ListenAndServe(i.Address, nil)
-		}
-		if err != nil {
+		if err = http.ListenAndServe(i.Address, nil); err != nil {
 			logger.Fatal(err)
 		}
 	}()

@@ -8,7 +8,7 @@ PD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 renice 15 $$
 pushd "${PD}/.." >/dev/null
 
-orgname="tsaikd"
+orgname="pensando"
 projname="gogstash"
 repo="github.com/${orgname}/${projname}"
 githash="$(git rev-parse HEAD | cut -c1-6)"
