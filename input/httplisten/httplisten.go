@@ -84,12 +84,7 @@ func (i *InputConfig) Start(ctx context.Context, msgChan chan<- logevent.LogEven
 	})
 	go func() {
 		logger.Infof("accepting POST requests to %s%s", i.Address, i.Path)
-		if i.ServerCert != "" && i.ServerKey != "" {
-			err = http.ListenAndServeTLS(i.Address, i.ServerCert, i.ServerKey, nil)
-		} else {
-			err = http.ListenAndServe(i.Address, nil)
-		}
-		if err != nil {
+		if err = http.ListenAndServe(i.Address, nil); err != nil {
 			logger.Fatal(err)
 		}
 	}()

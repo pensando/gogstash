@@ -71,10 +71,5 @@ func getMetric() (string, error) {
 	}
 
 	lines := strings.Split(string(body), "\n")
-	for _, line := range lines {
-		if strings.HasPrefix(line, "processed_messages_total") {
-			return line, nil
-		}
-	}
-	return "", nil
+	return lines[len(lines)-2], nil
 }
