@@ -1,10 +1,9 @@
 FROM busybox:ubuntu-14.04
 
-MAINTAINER tsaikd <tsaikd@gmail.com>
 ENV GOGSTASH_VERSION v1.0.2
 
-ADD https://github.com/tsaikd/gogstash/releases/download/${GOGSTASH_VERSION}/gogstash-Linux-x86_64 /usr/local/bin/gogstash
+ADD https://github.com/pensando/gogstash/releases/download/${GOGSTASH_VERSION}/gogstash.tar.gz /usr/local/bin/
 
-RUN chmod +x /usr/local/bin/gogstash
+RUN cd /usr/local/bin && tar -xzf gogstash.tar.gz && rm gogstash.tar.gz && chmod +x gogstash
 
-CMD ["gogstash"]
+ENTRYPOINT exec gogstash --config /etc/gogstash.yaml
