@@ -1,6 +1,6 @@
-FROM busybox:ubuntu-14.04
+FROM ubuntu:18.04 
 
-ENV GOGSTASH_VERSION v1.0.2
+ENV GOGSTASH_VERSION v1.0.3
 
 ADD https://github.com/pensando/gogstash/releases/download/${GOGSTASH_VERSION}/gogstash.tar.gz /usr/local/bin/
 
