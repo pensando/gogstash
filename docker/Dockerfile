@@ -1,6 +1,6 @@
 FROM ubuntu:18.04 
 
-ENV GOGSTASH_VERSION v1.0.3
+ENV GOGSTASH_VERSION v1.0.4
 
 ADD https://github.com/pensando/gogstash/releases/download/${GOGSTASH_VERSION}/gogstash.tar.gz /usr/local/bin/
 
